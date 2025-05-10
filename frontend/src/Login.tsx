@@ -68,7 +68,7 @@ const Login: React.FC = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <img src="/max.jpg" alt="CalendarSnap Logo" className="profile-image" />
+        <img src="/max.JPG" alt="CalendarSnap Logo" className="profile-image" />
         <h1 className="login-title">CalendarSnap</h1>
         <p className="login-subtitle">Sign in to access your calendar</p>
         <button onClick={handleLogin} className="google-login-button">

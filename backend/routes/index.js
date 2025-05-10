@@ -14,9 +14,23 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+// Load Google service account credentials from env variable
+let serviceAccount = undefined;
+if (process.env.NLP_SERVICE_ACCOUNT_JSON) {
+  try {
+    serviceAccount = JSON.parse(process.env.NLP_SERVICE_ACCOUNT_JSON);
+  } catch (e) {
+    console.error('Failed to parse NLP_SERVICE_ACCOUNT_JSON:', e);
+  }
+}
+
 // Google Cloud Vision and NLP clients
-const visionClient = new ImageAnnotatorClient();
-const languageClient = new LanguageServiceClient();
+const visionClient = serviceAccount
+  ? new ImageAnnotatorClient({ credentials: serviceAccount })
+  : new ImageAnnotatorClient();
+const languageClient = serviceAccount
+  ? new LanguageServiceClient({ credentials: serviceAccount })
+  : new LanguageServiceClient();
 
 function extractEventInfoFromOcr(text) {
   // --- 1. Split into clean lines up-front ---
