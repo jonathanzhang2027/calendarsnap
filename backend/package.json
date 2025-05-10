@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@google-cloud/language": "^7.0.1",
+    "chrono-node": "^2.8.0",
+    "compromise": "^14.14.4",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "dotenv": "^16.5.0",
+    "express": "~4.16.1",
+    "googleapis": "^148.0.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.10",
+    "tesseract.js": "^6.0.1"
+  }
+}
