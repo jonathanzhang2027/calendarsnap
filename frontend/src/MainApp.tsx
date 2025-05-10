@@ -15,7 +15,6 @@ type EventInfo = {
 };
 
 const MainApp: React.FC = () => {
-  const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [extractedInfo, setExtractedInfo] = useState<EventInfo | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,7 +26,6 @@ const MainApp: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setImage(file);
       setPreview(URL.createObjectURL(file));
       setExtractedInfo(null);
       setEditedEvent({});
@@ -40,7 +38,6 @@ const MainApp: React.FC = () => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      setImage(file);
       setPreview(URL.createObjectURL(file));
       setExtractedInfo(null);
       setEditedEvent({});
@@ -161,11 +158,7 @@ const MainApp: React.FC = () => {
       {preview && (
         <div className="preview-section">
           <h2>Image Preview</h2>
-          <img
-            src={preview}
-            alt="Preview of uploaded event image"
-            className="image-preview"
-          />
+          <img src={preview} alt="Event preview" className="image-preview" />
         </div>
       )}
       <div className="extracted-info-section">
