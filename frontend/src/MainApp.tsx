@@ -131,148 +131,161 @@ const MainApp: React.FC = () => {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>CalendarSnap</h1>
-        <p>
-          Upload a screenshot or image of your event details. We'll extract the
-          event info for you!
+    <div className="app-bg">
+      <header className="app-header-card">
+        <h1 className="main-title">CalendarSnap</h1>
+        <p className="subtitle">
+          Extract events from images and add them to your Google Calendar.
         </p>
       </header>
-      <div
-        className="upload-area"
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        tabIndex={0}
-        aria-label="Image upload area. Drag and drop or use the file input."
-      >
-        <p>Drag & drop an image here, or</p>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          style={{ display: "block", margin: "0 auto" }}
-          aria-label="Upload image file"
-        />
-      </div>
-      {preview && (
-        <div className="preview-section">
-          <h2>Image Preview</h2>
-          <img src={preview} alt="Event preview" className="image-preview" />
-        </div>
-      )}
-      <div className="extracted-info-section">
-        <h2>Extracted Event Information</h2>
-        <div className="placeholder-info">
-          {loading ? (
-            <div className="spinner" aria-live="polite" aria-busy="true">
-              <div className="lds-dual-ring"></div>
-              <p>Extracting text from image...</p>
+      <main className="main-content">
+        <div className="card upload-card">
+          <h2>Upload Event Image</h2>
+          <div
+            className="upload-area styled-upload"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            tabIndex={0}
+            aria-label="Image upload area. Drag and drop or use the file input."
+          >
+            <p>Drag & drop an image here, or</p>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="file-input"
+              aria-label="Upload image file"
+              disabled={loading}
+            />
+          </div>
+          {preview && (
+            <div className="preview-section">
+              <img
+                src={preview}
+                alt="Event preview"
+                className="image-preview styled-preview"
+              />
             </div>
-          ) : error ? (
-            <p style={{ color: "red" }} role="alert">
-              {error}
-            </p>
-          ) : extractedInfo ? (
-            <form className="event-info-form">
-              <label>
-                Title:
-                <input
-                  type="text"
-                  name="title"
-                  value={editedEvent.title ?? extractedInfo.title ?? ""}
-                  onChange={handleFieldChange}
-                  autoComplete="off"
-                />
-              </label>
-              <label>
-                Date:
-                <input
-                  type="text"
-                  name="date"
-                  value={editedEvent.date ?? extractedInfo.date ?? ""}
-                  onChange={handleFieldChange}
-                  autoComplete="off"
-                />
-              </label>
-              <label>
-                Time:
-                <input
-                  type="text"
-                  name="time"
-                  value={editedEvent.time ?? extractedInfo.time ?? ""}
-                  onChange={handleFieldChange}
-                  autoComplete="off"
-                />
-              </label>
-              <label>
-                Location:
-                <input
-                  type="text"
-                  name="location"
-                  value={editedEvent.location ?? extractedInfo.location ?? ""}
-                  onChange={handleFieldChange}
-                  autoComplete="off"
-                />
-              </label>
-              <label>
-                Description:
-                <textarea
-                  name="description"
-                  value={
-                    editedEvent.description ?? extractedInfo.description ?? ""
-                  }
-                  onChange={handleFieldChange}
-                  rows={2}
-                  style={{ width: "100%" }}
-                />
-              </label>
-              <label>
-                Attendees:
-                <input
-                  type="text"
-                  name="attendees"
-                  value={editedEvent.attendees ?? extractedInfo.attendees ?? ""}
-                  onChange={handleFieldChange}
-                  autoComplete="off"
-                />
-              </label>
-              <label>
-                Raw OCR Text:
-                <textarea
-                  name="text"
-                  value={extractedInfo.text}
-                  readOnly
-                  rows={5}
-                  style={{ width: "100%" }}
-                />
-              </label>
-              <button
-                className="google-login-button"
-                style={{ marginTop: 16, marginBottom: 8 }}
-                onClick={handleAddToCalendar}
-                disabled={calendarLoading}
-              >
-                {calendarLoading ? "Adding..." : "Add to Google Calendar"}
-              </button>
-              {calendarMessage && (
-                <div
-                  style={{
-                    marginTop: 8,
-                    color: calendarMessage.includes("success")
-                      ? "green"
-                      : "red",
-                  }}
-                >
-                  {calendarMessage}
-                </div>
-              )}
-            </form>
-          ) : (
-            <p>No event information extracted yet.</p>
           )}
         </div>
-      </div>
+        <div className="card event-info-card">
+          <h2>Extracted Event Information</h2>
+          <div className="placeholder-info">
+            {loading && (
+              <div className="loading-overlay">
+                <div className="lds-dual-ring large"></div>
+                <p>Extracting text from image...</p>
+              </div>
+            )}
+            {!loading && error && (
+              <p style={{ color: "red" }} role="alert">
+                {error}
+              </p>
+            )}
+            {!loading && extractedInfo ? (
+              <form className="event-info-form styled-form">
+                <label>
+                  Title:
+                  <input
+                    type="text"
+                    name="title"
+                    value={editedEvent.title ?? extractedInfo.title ?? ""}
+                    onChange={handleFieldChange}
+                    autoComplete="off"
+                  />
+                </label>
+                <label>
+                  Date:
+                  <input
+                    type="text"
+                    name="date"
+                    value={editedEvent.date ?? extractedInfo.date ?? ""}
+                    onChange={handleFieldChange}
+                    autoComplete="off"
+                  />
+                </label>
+                <label>
+                  Time:
+                  <input
+                    type="text"
+                    name="time"
+                    value={editedEvent.time ?? extractedInfo.time ?? ""}
+                    onChange={handleFieldChange}
+                    autoComplete="off"
+                  />
+                </label>
+                <label>
+                  Location:
+                  <input
+                    type="text"
+                    name="location"
+                    value={editedEvent.location ?? extractedInfo.location ?? ""}
+                    onChange={handleFieldChange}
+                    autoComplete="off"
+                  />
+                </label>
+                <label>
+                  Description:
+                  <textarea
+                    name="description"
+                    value={
+                      editedEvent.description ?? extractedInfo.description ?? ""
+                    }
+                    onChange={handleFieldChange}
+                    rows={2}
+                    style={{ width: "100%" }}
+                  />
+                </label>
+                <label>
+                  Attendees:
+                  <input
+                    type="text"
+                    name="attendees"
+                    value={
+                      editedEvent.attendees ?? extractedInfo.attendees ?? ""
+                    }
+                    onChange={handleFieldChange}
+                    autoComplete="off"
+                  />
+                </label>
+                <label>
+                  Raw OCR Text:
+                  <textarea
+                    name="text"
+                    value={extractedInfo.text}
+                    readOnly
+                    rows={5}
+                    style={{ width: "100%" }}
+                  />
+                </label>
+                <button
+                  className="google-login-button styled-calendar-btn"
+                  style={{ marginTop: 16, marginBottom: 8 }}
+                  onClick={handleAddToCalendar}
+                  disabled={calendarLoading}
+                  type="button"
+                >
+                  {calendarLoading ? "Adding..." : "Add to Google Calendar"}
+                </button>
+                {calendarMessage && (
+                  <div
+                    style={{
+                      marginTop: 8,
+                      color: calendarMessage.includes("success")
+                        ? "green"
+                        : "red",
+                    }}
+                  >
+                    {calendarMessage}
+                  </div>
+                )}
+              </form>
+            ) : !loading ? (
+              <p>No event information extracted yet.</p>
+            ) : null}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

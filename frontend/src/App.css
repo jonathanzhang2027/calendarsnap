@@ -113,3 +113,173 @@
     transform: rotate(360deg);
   }
 }
+
+.app-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  padding: 0;
+}
+
+.app-header-card {
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(80, 80, 180, 0.08);
+  border-radius: 0 0 24px 24px;
+  padding: 2rem 0 1.5rem 0;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #3b3b6d;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(80, 80, 180, 0.1);
+  padding: 2rem 2rem 1.5rem 2rem;
+  min-width: 340px;
+  max-width: 420px;
+  width: 100%;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.upload-card {
+  align-self: flex-start;
+}
+
+.event-info-card {
+  align-self: flex-start;
+  min-height: 480px;
+}
+
+.styled-upload {
+  border: 2px dashed #a5b4fc;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  background: #f1f5ff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s;
+}
+.styled-upload:focus-within,
+.styled-upload:hover {
+  border-color: #6366f1;
+}
+
+.file-input {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #c7d2fe;
+  font-size: 1rem;
+  width: 90%;
+  background: #fff;
+}
+
+.styled-preview {
+  margin-top: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(80, 80, 180, 0.1);
+  max-width: 100%;
+  max-height: 220px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.styled-form label {
+  display: block;
+  margin-bottom: 1rem;
+  color: #3b3b6d;
+  font-weight: 500;
+}
+.styled-form input,
+.styled-form textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #c7d2fe;
+  font-size: 1rem;
+  margin-top: 0.25rem;
+  background: #f8fafc;
+  transition: border-color 0.2s;
+}
+.styled-form input:focus,
+.styled-form textarea:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+.styled-calendar-btn {
+  background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(80, 80, 180, 0.1);
+  transition: background 0.2s, transform 0.1s;
+}
+.styled-calendar-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.styled-calendar-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
+  transform: translateY(-2px);
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 18px;
+}
+
+.lds-dual-ring.large {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .card {
+    min-width: 0;
+    max-width: 98vw;
+  }
+}
