@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-const API_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:8000/api/upload";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
 type EventInfo = {
   text: string;
@@ -58,7 +57,7 @@ const MainApp: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append("image", file);
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_URL + "/upload", {
         method: "POST",
         body: formData,
       });
@@ -104,19 +103,16 @@ const MainApp: React.FC = () => {
     setCalendarMessage(null);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        "http://localhost:8000/api/add-to-calendar",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            ...editedEvent,
-          }),
-        }
-      );
+      const response = await fetch(API_URL + "/add-to-calendar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...editedEvent,
+        }),
+      });
       const data = await response.json();
       if (response.ok) {
         setCalendarMessage("Event added to Google Calendar!");
