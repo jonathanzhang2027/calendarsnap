@@ -9,6 +9,7 @@ const fs = require('fs');
 const { VertexAI } = require('@google-cloud/vertexai');
 const { google } = require('googleapis');
 const { OpenAI } = require('openai');
+const { DateTime } = require('luxon');
 require('dotenv').config();
 const router = express.Router();
 
@@ -139,23 +140,31 @@ router.post('/api/add-to-calendar', async (req, res) => {
     if (!title || !date || !time) {
       return res.status(400).json({ error: 'Missing required fields.' });
     }
-    // Parse date and time to RFC3339 using chrono-node for robust parsing
+    // Parse date and time to RFC3339 in America/Los_Angeles timezone
     const parseDateTime = (dateStr, timeStr) => {
+      if (!dateStr || !timeStr) return null;
+      // Try to parse with chrono-node first
       const chronoResult = chrono.parse(dateStr + ' ' + timeStr);
       if (chronoResult.length > 0 && chronoResult[0].start) {
-        return chronoResult[0].start.date().toISOString();
+        // Use luxon to force PST
+        const d = chronoResult[0].start.date();
+        const dt = DateTime.fromJSDate(d, { zone: 'America/Los_Angeles' });
+        return dt.toISO();
       }
-      // fallback to naive Date
-      const d = new Date(`${dateStr} ${timeStr}`);
-      return d.toISOString();
+      // fallback: try to parse with luxon directly
+      const dt = DateTime.fromFormat(`${dateStr} ${timeStr}`, 'MM/dd/yyyy HH:mm', { zone: 'America/Los_Angeles' });
+      if (dt.isValid) return dt.toISO();
+      // fallback to naive Date (not recommended)
+      return new Date(`${dateStr} ${timeStr}`).toISOString();
     };
-    const startDateTime = parseDateTime(date, time);
-    const endDateTime = parseDateTime(date, time.split(/[–-]/)[1]);
+    const [startTime, endTime] = time.split(/[–-]/);
+    const startDateTime = parseDateTime(date, startTime);
+    const endDateTime = parseDateTime(date, endTime);
     // Prepare event object
     const event = {
       summary: title,
-      start: { dateTime: startDateTime },
-      end: { dateTime: endDateTime },
+      start: { dateTime: startDateTime, timeZone: 'America/Los_Angeles' },
+      end: { dateTime: endDateTime, timeZone: 'America/Los_Angeles' },
       location: location || undefined,
       description: description || undefined,
       // attendees: attendees
