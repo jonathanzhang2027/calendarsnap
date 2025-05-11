@@ -94,6 +94,26 @@ const MainApp: React.FC = () => {
     setEditedEvent((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Helper to convert MM/DD/YYYY to YYYY-MM-DD for input type="date"
+  const toInputDate = (dateStr: string | undefined) => {
+    if (!dateStr) return "";
+    // Try to parse MM/DD/YYYY or similar
+    const parts = dateStr.split("/");
+    if (parts.length === 3) {
+      const [mm, dd, yyyy] = parts;
+      return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+    }
+    // Already in yyyy-mm-dd
+    return dateStr;
+  };
+
+  // Helper to convert YYYY-MM-DD to MM/DD/YYYY for backend
+  const fromInputDate = (input: string) => {
+    if (!input) return "";
+    const [yyyy, mm, dd] = input.split("-");
+    return `${mm}/${dd}/${yyyy}`;
+  };
+
   const handleAddToCalendar = async () => {
     if (!editedEvent.title || !editedEvent.date || !editedEvent.time) {
       setCalendarMessage("Title, date, and time are required.");
@@ -193,10 +213,15 @@ const MainApp: React.FC = () => {
                 <label>
                   Date:
                   <input
-                    type="text"
+                    type="date"
                     name="date"
-                    value={editedEvent.date ?? extractedInfo.date ?? ""}
-                    onChange={handleFieldChange}
+                    value={toInputDate(
+                      editedEvent.date ?? extractedInfo.date ?? ""
+                    )}
+                    onChange={(e) => {
+                      const val = fromInputDate(e.target.value);
+                      setEditedEvent((prev) => ({ ...prev, date: val }));
+                    }}
                     autoComplete="off"
                   />
                 </label>
