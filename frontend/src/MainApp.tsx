@@ -174,6 +174,29 @@ const MainApp: React.FC = () => {
               disabled={loading}
             />
           </div>
+          {/* Google Calendar link */}
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "0.5rem",
+              marginBottom: "1rem",
+            }}
+          >
+            <a
+              href="https://calendar.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="google-calendar-link"
+              style={{
+                color: "#1976d2",
+                textDecoration: "underline",
+                fontWeight: 500,
+                fontSize: "1.5rem",
+              }}
+            >
+              Go to My Google Calendar
+            </a>
+          </div>
           {preview && (
             <div className="preview-section">
               <img
@@ -201,7 +224,9 @@ const MainApp: React.FC = () => {
             {!loading && extractedInfo ? (
               <form className="event-info-form styled-form">
                 <label>
-                  Title:
+                  <span style={{ fontWeight: "bold" }}>
+                    Title<span style={{ color: "red" }}>*</span>:
+                  </span>
                   <input
                     type="text"
                     name="title"
@@ -211,7 +236,9 @@ const MainApp: React.FC = () => {
                   />
                 </label>
                 <label>
-                  Date:
+                  <span style={{ fontWeight: "bold" }}>
+                    Date<span style={{ color: "red" }}>*</span>:
+                  </span>
                   <input
                     type="date"
                     name="date"
@@ -226,7 +253,9 @@ const MainApp: React.FC = () => {
                   />
                 </label>
                 <label>
-                  Time:
+                  <span style={{ fontWeight: "bold" }}>
+                    Time<span style={{ color: "red" }}>*</span>:
+                  </span>
                   <input
                     type="text"
                     name="time"
@@ -267,16 +296,6 @@ const MainApp: React.FC = () => {
                     }
                     onChange={handleFieldChange}
                     autoComplete="off"
-                  />
-                </label>
-                <label>
-                  Raw OCR Text:
-                  <textarea
-                    name="text"
-                    value={extractedInfo.text}
-                    readOnly
-                    rows={5}
-                    style={{ width: "100%" }}
                   />
                 </label>
                 <button

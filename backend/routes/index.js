@@ -8,7 +8,8 @@ const path = require('path');
 const fs = require('fs');
 const { VertexAI } = require('@google-cloud/vertexai');
 const { google } = require('googleapis');
-
+const { OpenAI } = require('openai');
+require('dotenv').config();
 const router = express.Router();
 
 // Set up multer for file uploads (store in memory for MVP)
@@ -45,45 +46,53 @@ if (serviceAccount) {
   });
 }
 
+// OpenAI for Vision OCR and event extraction
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
 // Refactored: LLM event extraction as a function
-async function extractEventInfoWithLLM(text) {
-  if (!vertexAiClient) {
-    throw new Error('Vertex AI client not configured.');
+async function extractEventInfoWithLLM(imageBuffer) {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('Missing OpenAI API key.');
   }
-  const prompt = `Extract the following event fields from the text below. Return a JSON object with keys: title, date, time, location, description, attendees. If a field is missing, use an empty string. Text: """
-${text}
-"""`;
-  const generativeModel = vertexAiClient.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-  });
-  const result = await generativeModel.generateContent({
-    contents: [
-      { role: 'user', parts: [{ text: prompt }] }
+  // Convert image buffer to base64
+  const base64Image = imageBuffer.toString('base64');
+  // Prepare prompt for event extraction
+  const prompt = `You are an assistant that extracts event information from images of flyers or emails. First, perform OCR to extract all text from the image. Then, extract the following event fields from the text: title, date, time, location, description, attendees. Return a JSON object with these keys. If a field is missing, use an empty string. Only return the JSON object.`;
+  // Call OpenAI Vision API (GPT-4-vision-preview)
+  const response = await openai.chat.completions.create({
+
+    model: 'gpt-4o',
+    messages: [
+      {
+        role: 'system',
+        content: prompt,
+      },
+      {
+        role: 'user',
+        content: [
+          { type: 'image_url', image_url: { url: `data:image/png;base64,${base64Image}` } }
+        ],
+      },
     ],
-    generationConfig: {
-      temperature: 0.2,
-      maxOutputTokens: 512,
-    },
+    max_tokens: 512,
+    temperature: 0.2,
   });
+  // Parse the model's response robustly
   let fields = {};
-  const response = result.response || result;
-  let content = response.candidates?.[0]?.content?.parts?.[0]?.text || response.candidates?.[0]?.content || response.candidates?.[0]?.output || response.candidates?.[0]?.text || '';
+  let content = response.choices?.[0]?.message?.content || '';
   // Remove Markdown code block if present
   content = content.replace(/^```json\s*|```$/g, '').trim();
   fields = JSON.parse(content);
-
   // --- Normalize date ---
   if (fields.date) {
     const chronoDate = chrono.parse(fields.date);
     if (chronoDate.length > 0 && chronoDate[0].start) {
       const d = chronoDate[0].start.date();
-      // Format as YYYY-MM-DD
       fields.date = d.toISOString().slice(0, 10);
     }
   }
   // --- Normalize time ---
   if (fields.time) {
-    // Try to parse as a range (e.g., "8:00 to 7:00 PM" or "7–8PM")
     const chronoTime = chrono.parse(fields.time);
     if (chronoTime.length > 0 && chronoTime[0].start) {
       const opts = { hour: '2-digit', minute: '2-digit', hour12: false };
@@ -96,7 +105,6 @@ ${text}
       fields.time = timeStr;
     }
   }
-
   return fields;
 }
 
@@ -111,16 +119,12 @@ router.post('/api/upload', upload.single('image'), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file uploaded.' });
     }
-    // Use Google Vision API to extract text from the image buffer
-    const [result] = await visionClient.textDetection({ image: { content: req.file.buffer } });
-    const detections = result.textAnnotations;
-    const text = detections && detections.length > 0 ? detections[0].description : '';
-    // Extract event info using LLM
-    const eventInfo = await extractEventInfoWithLLM(text);
-    res.json({ text, ...eventInfo });
+    // Use OpenAI Vision API for OCR and event extraction
+    const eventInfo = await extractEventInfoWithLLM(req.file.buffer);
+    res.json(eventInfo);
   } catch (error) {
-    console.error('OCR error:', error);
-    res.status(500).json({ error: 'Failed to process image.' });
+    console.error('OCR/LLM error:', error);
+    res.status(500).json({ error: 'Failed to process image with ChatGPT Vision.', details: error.message });
   }
 });
 
