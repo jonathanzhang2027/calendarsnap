@@ -146,14 +146,14 @@ router.post('/api/add-to-calendar', async (req, res) => {
       // Try to parse with chrono-node first
       const chronoResult = chrono.parse(dateStr + ' ' + timeStr);
       if (chronoResult.length > 0 && chronoResult[0].start) {
-        // Use luxon to force PST
+        // Use luxon to force PST/PDT and include offset
         const d = chronoResult[0].start.date();
         const dt = DateTime.fromJSDate(d, { zone: 'America/Los_Angeles' });
-        return dt.toISO();
+        return dt.toISO({ suppressMilliseconds: true, includeOffset: true });
       }
       // fallback: try to parse with luxon directly
       const dt = DateTime.fromFormat(`${dateStr} ${timeStr}`, 'MM/dd/yyyy HH:mm', { zone: 'America/Los_Angeles' });
-      if (dt.isValid) return dt.toISO();
+      if (dt.isValid) return dt.toISO({ suppressMilliseconds: true, includeOffset: true });
       // fallback to naive Date (not recommended)
       return new Date(`${dateStr} ${timeStr}`).toISOString();
     };
