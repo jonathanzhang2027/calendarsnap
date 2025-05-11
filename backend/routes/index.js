@@ -192,28 +192,23 @@ router.post('/api/add-to-calendar', async (req, res) => {
     if (!title || !date || !time) {
       return res.status(400).json({ error: 'Missing required fields.' });
     }
-    // Parse start/end time from time string (e.g. "7:00 PM – 8:00 PM")
-    let startTime = '', endTime = '';
-    const timeRange = time.split(/[–-]/);
-    if (timeRange.length === 2) {
-      startTime = timeRange[0].trim();
-      endTime = timeRange[1].trim();
-    } else {
-      startTime = time.trim();
-      endTime = '';
-    }
-    // Parse date and time to RFC3339
+    // Parse date and time to RFC3339 using chrono-node for robust parsing
     const parseDateTime = (dateStr, timeStr) => {
+      const chronoResult = chrono.parse(dateStr + ' ' + timeStr);
+      if (chronoResult.length > 0 && chronoResult[0].start) {
+        return chronoResult[0].start.date().toISOString();
+      }
+      // fallback to naive Date
       const d = new Date(`${dateStr} ${timeStr}`);
       return d.toISOString();
     };
-    const startDateTime = parseDateTime(date, startTime);
-    const endDateTime = endTime ? parseDateTime(date, endTime) : undefined;
+    const startDateTime = parseDateTime(date, time);
+    const endDateTime = parseDateTime(date, time.split(/[–-]/)[1]);
     // Prepare event object
     const event = {
       summary: title,
       start: { dateTime: startDateTime },
-      end: { dateTime: endDateTime || startDateTime },
+      end: { dateTime: endDateTime },
       location: location || undefined,
       description: description || undefined,
       // attendees: attendees
