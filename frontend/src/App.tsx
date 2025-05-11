@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Login from "./Login";
 import MainApp from "./MainApp";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -31,6 +32,7 @@ const App: React.FC = () => {
             </RequireAuth>
           }
         />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

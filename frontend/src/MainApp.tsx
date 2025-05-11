@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
+import { Link } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
@@ -174,6 +175,18 @@ const MainApp: React.FC = () => {
               disabled={loading}
             />
           </div>
+          {/* In-product privacy notice */}
+          <div
+            style={{
+              textAlign: "center",
+              color: "#666",
+              fontSize: "0.95rem",
+              margin: "0.5rem 0 0.5rem 0",
+            }}
+          >
+            We only use your Google account to add events to your calendar. Your
+            data is never stored or shared.
+          </div>
           {/* Google Calendar link */}
           <div
             style={{
@@ -326,6 +339,20 @@ const MainApp: React.FC = () => {
           </div>
         </div>
       </main>
+      <div
+        style={{ textAlign: "center", marginTop: "2rem", marginBottom: "1rem" }}
+      >
+        <Link
+          to="/privacy"
+          style={{
+            color: "#888",
+            textDecoration: "underline",
+            fontSize: "1rem",
+          }}
+        >
+          Privacy Policy
+        </Link>
+      </div>
     </div>
   );
 };

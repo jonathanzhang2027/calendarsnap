@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 
 const Login: React.FC = () => {
@@ -70,7 +70,10 @@ const Login: React.FC = () => {
       <div className="login-card">
         <img src="/max.JPG" alt="CalendarSnap Logo" className="profile-image" />
         <h1 className="login-title">CalendarSnap</h1>
-        <p className="login-subtitle">Sign in to access your calendar</p>
+        <p className="login-subtitle">
+          Sign in to upload event images and add events directly to your Google
+          Calendar
+        </p>
         <button onClick={handleLogin} className="google-login-button">
           <svg
             width="24"
@@ -97,6 +100,20 @@ const Login: React.FC = () => {
           </svg>
           Sign in with Google
         </button>
+      </div>
+      <div
+        style={{ textAlign: "center", marginTop: "2rem", marginBottom: "1rem" }}
+      >
+        <Link
+          to="/privacy"
+          style={{
+            color: "#888",
+            textDecoration: "underline",
+            fontSize: "1rem",
+          }}
+        >
+          Privacy Policy
+        </Link>
       </div>
     </div>
   );
