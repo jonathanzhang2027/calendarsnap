@@ -22,6 +22,49 @@ const Login: React.FC = () => {
       .replace(/=+$/, "");
   };
 
+  // --- Silent Auth on Mount ---
+  useEffect(() => {
+    // Only try silent auth if not already logged in
+    if (localStorage.getItem("token")) return;
+    const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+    const params = {
+      client_id: clientId || "",
+      redirect_uri: window.location.origin + "/login",
+      response_type: "token",
+      scope:
+        "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email",
+      include_granted_scopes: "true",
+      prompt: "none",
+    };
+    const url = oauth2Endpoint + "?" + new URLSearchParams(params).toString();
+    // Create a hidden iframe
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = url;
+    document.body.appendChild(iframe);
+
+    // Handler to receive token from iframe
+    const handleMessage = (event: MessageEvent) => {
+      if (
+        typeof event.data === "string" &&
+        event.data.startsWith("access_token=")
+      ) {
+        const token = event.data.split("=")[1];
+        if (token) {
+          localStorage.setItem("token", token);
+          navigate("/app");
+        }
+      }
+    };
+    window.addEventListener("message", handleMessage);
+
+    // Clean up
+    setTimeout(() => {
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      window.removeEventListener("message", handleMessage);
+    }, 5000);
+  }, [clientId, navigate]);
+
   useEffect(() => {
     // Parse hash params after redirect
     const fragmentString = window.location.hash.substring(1);
@@ -33,9 +76,22 @@ const Login: React.FC = () => {
     }
     if (Object.keys(params).length > 0 && params["access_token"]) {
       localStorage.setItem("token", params["access_token"]);
+      // Also postMessage to parent for silent auth
+      if (window.parent !== window) {
+        window.parent.postMessage(
+          `access_token=${params["access_token"]}`,
+          window.location.origin
+        );
+      }
       navigate("/app");
     }
   }, [navigate]);
+
+//   useEffect(() => {
+//     if (localStorage.getItem("token")) {
+//       navigate("/app");
+//     }
+//   }, [navigate]);
 
   const handleLogin = () => {
     console.log("handleLogin", clientId);

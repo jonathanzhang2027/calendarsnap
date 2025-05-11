@@ -50,6 +50,19 @@ const MainApp: React.FC = () => {
     e.preventDefault();
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    if (e.clipboardData && e.clipboardData.files.length > 0) {
+      const file = e.clipboardData.files[0];
+      if (file.type.startsWith("image/")) {
+        setPreview(URL.createObjectURL(file));
+        setExtractedInfo(null);
+        setEditedEvent({});
+        setError(null);
+        uploadImage(file);
+      }
+    }
+  };
+
   const uploadImage = async (file: File) => {
     setLoading(true);
     setExtractedInfo(null);
@@ -162,10 +175,11 @@ const MainApp: React.FC = () => {
             className="upload-area styled-upload"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
+            onPaste={handlePaste}
             tabIndex={0}
-            aria-label="Image upload area. Drag and drop or use the file input."
+            aria-label="Image upload area. Drag and drop, paste, or use the file input."
           >
-            <p>Drag & drop an image here, or</p>
+            <p>Drag & drop, click here and paste a screenshot, or</p>
             <input
               type="file"
               accept="image/*"
