@@ -140,23 +140,16 @@ router.post('/api/add-to-calendar', async (req, res) => {
     if (!title || !date || !time) {
       return res.status(400).json({ error: 'Missing required fields.' });
     }
-    // Parse date and time to RFC3339 in America/Los_Angeles timezone
-    const parseDateTime = (dateStr, timeStr) => {
+    // Parse date and time to RFC3339 in America/Los_Angeles timezone using only Luxon
+    function parseDateTime(dateStr, timeStr) {
       if (!dateStr || !timeStr) return null;
-      // Try to parse with chrono-node first
-      const chronoResult = chrono.parse(dateStr + ' ' + timeStr);
-      if (chronoResult.length > 0 && chronoResult[0].start) {
-        // Use luxon to force PST/PDT and include offset
-        const d = chronoResult[0].start.date();
-        const dt = DateTime.fromJSDate(d, { zone: 'America/Los_Angeles' });
-        return dt.toISO({ suppressMilliseconds: true, includeOffset: true });
-      }
-      // fallback: try to parse with luxon directly
-      const dt = DateTime.fromFormat(`${dateStr} ${timeStr}`, 'MM/dd/yyyy HH:mm', { zone: 'America/Los_Angeles' });
-      if (dt.isValid) return dt.toISO({ suppressMilliseconds: true, includeOffset: true });
-      // fallback to naive Date (not recommended)
-      return new Date(`${dateStr} ${timeStr}`).toISOString();
-    };
+      const [hourMin] = timeStr.split(/[–-]/); // just take the start time
+      return DateTime
+        .fromFormat(`${dateStr} ${hourMin}`, 'yyyy-MM-dd HH:mm', {
+          zone: 'America/Los_Angeles'
+        })
+        .toISO({ suppressMilliseconds: true });
+    }
     const [startTime, endTime] = time.split(/[–-]/);
     const startDateTime = parseDateTime(date, startTime);
     const endDateTime = parseDateTime(date, endTime);

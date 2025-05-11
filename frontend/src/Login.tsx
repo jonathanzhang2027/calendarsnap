@@ -107,9 +107,11 @@ const Login: React.FC = () => {
         <Link
           to="/privacy"
           style={{
-            color: "#888",
+            color: "#fff",
             textDecoration: "underline",
-            fontSize: "1rem",
+            fontSize: "1.25rem",
+            fontWeight: 600,
+            textShadow: "0 1px 4px rgba(80,80,180,0.25)",
           }}
         >
           Privacy Policy
