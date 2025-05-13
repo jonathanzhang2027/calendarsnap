@@ -87,11 +87,11 @@ const Login: React.FC = () => {
     }
   }, [navigate]);
 
-//   useEffect(() => {
-//     if (localStorage.getItem("token")) {
-//       navigate("/app");
-//     }
-//   }, [navigate]);
+  //   useEffect(() => {
+  //     if (localStorage.getItem("token")) {
+  //       navigate("/app");
+  //     }
+  //   }, [navigate]);
 
   const handleLogin = () => {
     console.log("handleLogin", clientId);
@@ -124,7 +124,11 @@ const Login: React.FC = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <img src="/IMG_5429.JPG" alt="CalendarSnap Logo" className="profile-image" />
+        <img
+          src="/IMG_5429.jpg"
+          alt="CalendarSnap Logo"
+          className="profile-image"
+        />
         <h1 className="login-title">CalendarSnap</h1>
         <p className="login-subtitle">
           Sign in to upload event images and add events directly to your Google
