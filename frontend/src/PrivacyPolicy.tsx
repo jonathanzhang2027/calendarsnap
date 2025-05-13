@@ -39,7 +39,7 @@ const PrivacyPolicy: React.FC = () => (
     <p>
       We do not share your data with third parties. For questions or concerns,
       please contact us at{" "}
-      <a href="mailto:support@calendarsnap.app">support@calendarsnap.app</a>.
+      <a href="mailto:jonathanzhang4@gmail.com">jonathanzhang4@gmail.com</a>.
     </p>
     <p>
       By using CalendarSnap, you consent to the processing of your data as
