@@ -162,6 +162,41 @@ const Login: React.FC = () => {
         </button>
       </div>
       <div
+        className="login-info-below-card"
+        style={{
+          maxWidth: 400,
+          margin: "0 auto",
+          marginTop: 16,
+          background: "#fff",
+          borderRadius: 12,
+          boxShadow: "0 2px 8px #0001",
+          padding: 20,
+          color: "#222",
+          fontSize: "1.05rem",
+          textAlign: "left",
+        }}
+      >
+        <div style={{ marginBottom: 8 }}>
+          <b>How it works:</b> Upload or paste an event image or calendar
+          screenshot, review/edit the extracted details, and add events to your
+          Google Calendar.
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <b>Why Google access?</b> We only use your Google account to add
+          events to your calendar. We never store or share your data.
+        </div>
+        <div style={{ marginBottom: 0 }}>
+          <b>Privacy:</b> All processing is transient and privacy-compliant.{" "}
+          <a href="/privacy" target="_blank" rel="noopener noreferrer">
+            View our Privacy Policy
+          </a>
+        </div>
+        <div style={{ marginTop: 8, fontSize: "0.98rem", color: "#666" }}>
+          This app is hosted on our own verified domain. Homepage and privacy
+          policy are always accessible without login.
+        </div>
+      </div>
+      <div
         style={{ textAlign: "center", marginTop: "2rem", marginBottom: "1rem" }}
       >
         <Link
